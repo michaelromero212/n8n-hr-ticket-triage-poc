@@ -1,0 +1,184 @@
+{
+    "name": "Email to HR Ticket",
+    "nodes": [
+        {
+            "parameters": {
+                "pollTimes": {
+                    "item": [
+                        {
+                            "mode": "everyMinute"
+                        }
+                    ]
+                },
+                "filters": {
+                    "sender": "",
+                    "subject": "",
+                    "readStatus": "unread"
+                },
+                "options": {}
+            },
+            "id": "email-trigger",
+            "name": "Watch HR Inbox",
+            "type": "n8n-nodes-base.emailReadImap",
+            "typeVersion": 2,
+            "position": [
+                250,
+                300
+            ],
+            "credentials": {
+                "imap": {
+                    "id": "4",
+                    "name": "HR Inbox IMAP"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-3.5-turbo",
+                "messages": {
+                    "values": [
+                        {
+                            "role": "system",
+                            "content": "Extract the following from this HR email: employee_name, subject (short summary), description (main request). Return as JSON."
+                        },
+                        {
+                            "role": "user",
+                            "content": "={{ $json.text }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "parse-email",
+            "name": "Parse Email Content",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "5",
+                    "name": "OpenAI"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const parsed = JSON.parse($input.first().json.message.content);\nreturn [{\n  json: {\n    employee_name: parsed.employee_name || $input.first().json.from,\n    email: $input.first().json.from,\n    subject: parsed.subject,\n    description: parsed.description,\n    source: 'email'\n  }\n}];"
+            },
+            "id": "format-ticket",
+            "name": "Format as Ticket",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://localhost:5001/api/tickets",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "employee_name",
+                            "value": "={{ $json.employee_name }}"
+                        },
+                        {
+                            "name": "email",
+                            "value": "={{ $json.email }}"
+                        },
+                        {
+                            "name": "subject",
+                            "value": "={{ $json.subject }}"
+                        },
+                        {
+                            "name": "description",
+                            "value": "={{ $json.description }}"
+                        }
+                    ]
+                }
+            },
+            "id": "create-ticket",
+            "name": "Create Ticket",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                850,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "fromEmail": "hr-system@company.com",
+                "toEmail": "={{ $node['Watch HR Inbox'].json.from }}",
+                "subject": "RE: {{ $node['Watch HR Inbox'].json.subject }} - Ticket Created",
+                "html": "<p>Thank you for contacting HR.</p><p>Your request has been automatically logged and assigned ticket number <strong>{{ $json.id }}</strong>.</p><p>We will respond within 24-48 hours.</p>"
+            },
+            "id": "send-confirmation",
+            "name": "Send Auto-Reply",
+            "type": "n8n-nodes-base.emailSend",
+            "typeVersion": 1,
+            "position": [
+                1050,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Watch HR Inbox": {
+            "main": [
+                [
+                    {
+                        "node": "Parse Email Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse Email Content": {
+            "main": [
+                [
+                    {
+                        "node": "Format as Ticket",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Format as Ticket": {
+            "main": [
+                [
+                    {
+                        "node": "Create Ticket",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Ticket": {
+            "main": [
+                [
+                    {
+                        "node": "Send Auto-Reply",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {},
+    "staticData": null,
+    "tags": [],
+    "triggerCount": 0,
+    "updatedAt": "2026-02-06T12:30:00.000Z",
+    "versionId": "email-v1"
+}

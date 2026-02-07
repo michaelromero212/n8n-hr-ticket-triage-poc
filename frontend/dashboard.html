@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | HR Ticket Triage</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">🎫</span>
+            <span>HR Ticket Triage</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Submit Ticket</a>
+            <a href="/dashboard" class="active">Dashboard</a>
+            <a href="/workflows">Workflows</a>
+            <a href="/integrations-demo">Integrations</a>
+            <a href="/how-it-works">How It Works</a>
+        </div>
+    </nav>
+
+    <main class="container dashboard">
+        <div class="hero">
+            <h1>Ticket Dashboard</h1>
+            <p class="subtitle">Monitor AI-classified HR requests in real-time</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <span class="stat-value" id="totalTickets">-</span>
+                    <span class="stat-label">Total Tickets</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-content">
+                    <span class="stat-value" id="pendingTickets">-</span>
+                    <span class="stat-label">Pending</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🤖</div>
+                <div class="stat-content">
+                    <span class="stat-value" id="classifiedTickets">-</span>
+                    <span class="stat-label">AI Classified</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <span class="stat-value" id="resolvedTickets">-</span>
+                    <span class="stat-label">Resolved</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-grid">
+            <div class="card chart-card">
+                <h3>Tickets by Category</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+            <div class="card chart-card">
+                <h3>Tickets by Status</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tickets Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Recent Tickets</h3>
+                <button class="btn btn-secondary btn-sm" onclick="refreshData()">
+                    🔄 Refresh
+                </button>
+            </div>
+            <div class="table-container">
+                <table class="tickets-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Employee</th>
+                            <th>Subject</th>
+                            <th>AI Category</th>
+                            <th>Confidence</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ticketsTableBody">
+                        <tr>
+                            <td colspan="7" class="empty-state">Loading tickets...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Ticket Detail Modal -->
+        <div id="ticketModal" class="modal" style="display: none;">
+            <div class="modal-content modal-lg">
+                <button class="modal-close" onclick="closeTicketModal()">&times;</button>
+                <h2>Ticket Details</h2>
+                <div id="ticketDetails"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>HR Ticket Triage POC • Powered by n8n + HuggingFace AI</p>
+    </footer>
+
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

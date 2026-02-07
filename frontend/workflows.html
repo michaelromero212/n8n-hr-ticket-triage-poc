@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Gallery - HR Ticket Triage</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .workflow-gallery {
+            display: grid;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .workflow-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .workflow-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-color);
+        }
+
+        .workflow-header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .workflow-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .workflow-title h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .workflow-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .workflow-badge.advanced {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+        }
+
+        .workflow-badge.monitor {
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+        }
+
+        .workflow-badge.intake {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+        }
+
+        .workflow-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .workflow-body {
+            padding: 1.5rem;
+        }
+
+        .workflow-diagram {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .nodes-flow {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            min-width: max-content;
+        }
+
+        .node {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            min-width: 100px;
+            transition: transform 0.2s;
+        }
+
+        .node:hover {
+            transform: scale(1.05);
+        }
+
+        .node.trigger {
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+        }
+
+        .node.ai {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.2));
+        }
+
+        .node.condition {
+            border-color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.2));
+            border-radius: 50%;
+            min-width: 80px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .node.action {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.2));
+        }
+
+        .node.slack {
+            border-color: #e01e5a;
+            background: linear-gradient(135deg, rgba(224, 30, 90, 0.2), rgba(236, 72, 153, 0.2));
+        }
+
+        .node.email {
+            border-color: #06b6d4;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(34, 211, 238, 0.2));
+        }
+
+        .node.calendar {
+            border-color: #4285f4;
+            background: linear-gradient(135deg, rgba(66, 133, 244, 0.2), rgba(52, 168, 83, 0.2));
+        }
+
+        .node-icon {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .node-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .arrow {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .branch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .branch-row {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .workflow-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-tag {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-color);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .workflow-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: white !important;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-download:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: var(--text-primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: border-color 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary-color);
+        }
+
+        .integration-icons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .integration-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .nodes-flow {
+                flex-direction: column;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🎫</span>
+            <span>HR Ticket Triage</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Submit Ticket</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/workflows" class="active">Workflows</a>
+            <a href="/integrations-demo">Integrations</a>
+            <a href="/how-it-works">How It Works</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="gallery-header">
+            <h1 class="page-title">n8n Workflow Gallery</h1>
+            <p class="page-subtitle">Pre-built automation workflows ready to import into n8n</p>
+        </header>
+
+        <div class="workflow-gallery">
+            <!-- Workflow 1: Advanced Multi-Branch -->
+            <div class="workflow-card">
+                <div class="workflow-header">
+                    <div class="workflow-title">
+                        <h3>🔀 Advanced Multi-Branch Triage</h3>
+                        <span class="workflow-badge advanced">Advanced</span>
+                    </div>
+                    <p class="workflow-desc">Intelligent routing with conditional branches based on AI classification.
+                        Complaints trigger urgent Slack alerts, PTO requests create calendar holds, and all tickets get
+                        email confirmations.</p>
+                </div>
+                <div class="workflow-body">
+                    <div class="workflow-diagram">
+                        <div class="nodes-flow">
+                            <div class="node trigger">
+                                <div class="node-icon">🎣</div>
+                                <div class="node-label">Webhook</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node ai">
+                                <div class="node-icon">🧠</div>
+                                <div class="node-label">AI Classify</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="branch-container">
+                                <div class="branch-row">
+                                    <div class="node condition">
+                                        <div class="node-icon">❓</div>
+                                        <div class="node-label">Complaint?</div>
+                                    </div>
+                                    <div class="arrow">→</div>
+                                    <div class="node slack">
+                                        <div class="node-icon">💬</div>
+                                        <div class="node-label">Slack Alert</div>
+                                    </div>
+                                </div>
+                                <div class="branch-row">
+                                    <div class="node condition">
+                                        <div class="node-icon">❓</div>
+                                        <div class="node-label">PTO?</div>
+                                    </div>
+                                    <div class="arrow">→</div>
+                                    <div class="node calendar">
+                                        <div class="node-icon">📅</div>
+                                        <div class="node-label">Calendar</div>
+                                    </div>
+                                </div>
+                                <div class="branch-row">
+                                    <div class="node email">
+                                        <div class="node-icon">📧</div>
+                                        <div class="node-label">Email Confirm</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node action">
+                                <div class="node-icon">💾</div>
+                                <div class="node-label">Update DB</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="workflow-features">
+                        <span class="feature-tag">Webhook Trigger</span>
+                        <span class="feature-tag">HuggingFace AI</span>
+                        <span class="feature-tag">Conditional Routing</span>
+                        <span class="feature-tag">Slack Alerts</span>
+                        <span class="feature-tag">Email Notifications</span>
+                        <span class="feature-tag">Google Calendar</span>
+                    </div>
+                    <div class="integration-icons">
+                        <div class="integration-icon" title="Slack">💬</div>
+                        <div class="integration-icon" title="Gmail">📧</div>
+                        <div class="integration-icon" title="Google Calendar">📅</div>
+                        <div class="integration-icon" title="HuggingFace">🤗</div>
+                    </div>
+                    <div class="workflow-actions">
+                        <a href="/api/workflows/hr-ticket-advanced.json" download class="btn-download">
+                            ⬇️ Download JSON
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow 2: SLA Escalation -->
+            <div class="workflow-card">
+                <div class="workflow-header">
+                    <div class="workflow-title">
+                        <h3>⏰ SLA Escalation Monitor</h3>
+                        <span class="workflow-badge monitor">Background</span>
+                    </div>
+                    <p class="workflow-desc">Automated SLA monitoring that runs every hour. Sends reminders for tickets
+                        over 24 hours and escalates to management for tickets exceeding 48 hours.</p>
+                </div>
+                <div class="workflow-body">
+                    <div class="workflow-diagram">
+                        <div class="nodes-flow">
+                            <div class="node trigger">
+                                <div class="node-icon">⏱️</div>
+                                <div class="node-label">Every Hour</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node action">
+                                <div class="node-icon">📋</div>
+                                <div class="node-label">Get Tickets</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node condition">
+                                <div class="node-icon">🔍</div>
+                                <div class="node-label">&gt;24h?</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="branch-container">
+                                <div class="branch-row">
+                                    <div class="node condition">
+                                        <div class="node-icon">⚠️</div>
+                                        <div class="node-label">&gt;48h?</div>
+                                    </div>
+                                    <div class="arrow">→</div>
+                                    <div class="node slack">
+                                        <div class="node-icon">🚨</div>
+                                        <div class="node-label">Escalate</div>
+                                    </div>
+                                </div>
+                                <div class="branch-row">
+                                    <div class="node slack">
+                                        <div class="node-icon">💬</div>
+                                        <div class="node-label">Reminder</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="workflow-features">
+                        <span class="feature-tag">Schedule Trigger</span>
+                        <span class="feature-tag">HTTP Request</span>
+                        <span class="feature-tag">Filter</span>
+                        <span class="feature-tag">Conditional Logic</span>
+                        <span class="feature-tag">Slack Notifications</span>
+                    </div>
+                    <div class="integration-icons">
+                        <div class="integration-icon" title="Slack">💬</div>
+                        <div class="integration-icon" title="REST API">🔗</div>
+                    </div>
+                    <div class="workflow-actions">
+                        <a href="/api/workflows/sla-escalation.json" download class="btn-download">
+                            ⬇️ Download JSON
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow 3: Email to Ticket -->
+            <div class="workflow-card">
+                <div class="workflow-header">
+                    <div class="workflow-title">
+                        <h3>📧 Email to Ticket Converter</h3>
+                        <span class="workflow-badge intake">Multi-Channel</span>
+                    </div>
+                    <p class="workflow-desc">Monitors the HR inbox and automatically creates tickets from incoming
+                        emails. Uses AI to extract employee name, subject, and description from unstructured email
+                        content.</p>
+                </div>
+                <div class="workflow-body">
+                    <div class="workflow-diagram">
+                        <div class="nodes-flow">
+                            <div class="node trigger">
+                                <div class="node-icon">📬</div>
+                                <div class="node-label">Watch Inbox</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node ai">
+                                <div class="node-icon">🤖</div>
+                                <div class="node-label">Parse Email</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node action">
+                                <div class="node-icon">⚙️</div>
+                                <div class="node-label">Format</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node action">
+                                <div class="node-icon">🎫</div>
+                                <div class="node-label">Create Ticket</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node email">
+                                <div class="node-icon">✉️</div>
+                                <div class="node-label">Auto-Reply</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="workflow-features">
+                        <span class="feature-tag">IMAP Trigger</span>
+                        <span class="feature-tag">OpenAI/GPT</span>
+                        <span class="feature-tag">Code Node</span>
+                        <span class="feature-tag">HTTP Request</span>
+                        <span class="feature-tag">Email Send</span>
+                    </div>
+                    <div class="integration-icons">
+                        <div class="integration-icon" title="Gmail/O365">📧</div>
+                        <div class="integration-icon" title="OpenAI">🤖</div>
+                        <div class="integration-icon" title="REST API">🔗</div>
+                    </div>
+                    <div class="workflow-actions">
+                        <a href="/api/workflows/email-to-ticket.json" download class="btn-download">
+                            ⬇️ Download JSON
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow 4: Basic Triage -->
+            <div class="workflow-card">
+                <div class="workflow-header">
+                    <div class="workflow-title">
+                        <h3>🎯 Basic AI Triage</h3>
+                        <span class="workflow-badge">Starter</span>
+                    </div>
+                    <p class="workflow-desc">Simple webhook-to-classification workflow. Receives tickets, classifies
+                        with HuggingFace, and updates the database. Perfect starting point for customization.</p>
+                </div>
+                <div class="workflow-body">
+                    <div class="workflow-diagram">
+                        <div class="nodes-flow">
+                            <div class="node trigger">
+                                <div class="node-icon">🎣</div>
+                                <div class="node-label">Webhook</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node ai">
+                                <div class="node-icon">🧠</div>
+                                <div class="node-label">AI Classify</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node action">
+                                <div class="node-icon">💾</div>
+                                <div class="node-label">Update DB</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="node action">
+                                <div class="node-icon">✅</div>
+                                <div class="node-label">Respond</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="workflow-features">
+                        <span class="feature-tag">Webhook Trigger</span>
+                        <span class="feature-tag">HuggingFace AI</span>
+                        <span class="feature-tag">HTTP Request</span>
+                        <span class="feature-tag">Webhook Response</span>
+                    </div>
+                    <div class="integration-icons">
+                        <div class="integration-icon" title="HuggingFace">🤗</div>
+                        <div class="integration-icon" title="REST API">🔗</div>
+                    </div>
+                    <div class="workflow-actions">
+                        <a href="/api/workflows/hr-ticket-triage.json" download class="btn-download">
+                            ⬇️ Download JSON
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>HR Ticket Triage POC • Powered by n8n + HuggingFace AI</p>
+    </footer>
+</body>
+
+</html>

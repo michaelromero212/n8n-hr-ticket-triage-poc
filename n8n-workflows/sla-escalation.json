@@ -1,0 +1,213 @@
+{
+    "name": "HR SLA Escalation Monitor",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "hoursInterval": 1
+                        }
+                    ]
+                }
+            },
+            "id": "schedule-trigger",
+            "name": "Run Every Hour",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "http://localhost:5001/api/tickets",
+                "options": {}
+            },
+            "id": "get-tickets",
+            "name": "Get All Tickets",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.status }}",
+                            "operation": "notEqual",
+                            "value2": "resolved"
+                        }
+                    ],
+                    "number": [
+                        {
+                            "value1": "={{ (Date.now() - new Date($json.created_at).getTime()) / (1000 * 60 * 60) }}",
+                            "operation": "larger",
+                            "value2": 24
+                        }
+                    ]
+                }
+            },
+            "id": "filter-overdue",
+            "name": "Filter Overdue (>24h)",
+            "type": "n8n-nodes-base.filter",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "number": [
+                        {
+                            "value1": "={{ (Date.now() - new Date($json.created_at).getTime()) / (1000 * 60 * 60) }}",
+                            "operation": "larger",
+                            "value2": 48
+                        }
+                    ]
+                }
+            },
+            "id": "check-critical",
+            "name": "Is Critical (>48h)?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                850,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "channel": "#hr-team",
+                "text": "⏰ *Reminder: Pending HR Ticket*\n\n*Ticket ID:* {{ $json.id }}\n*Subject:* {{ $json.subject }}\n*Category:* {{ $json.ai_category }}\n*Age:* {{ Math.round((Date.now() - new Date($json.created_at).getTime()) / (1000 * 60 * 60)) }} hours\n\n_Please review and respond to this ticket._"
+            },
+            "id": "slack-reminder",
+            "name": "Send Reminder",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 1,
+            "position": [
+                1100,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "channel": "#hr-leadership",
+                "text": "🚨 *ESCALATION: Overdue HR Ticket*\n\n*Ticket ID:* {{ $json.id }}\n*Subject:* {{ $json.subject }}\n*From:* {{ $json.employee_name }}\n*Category:* {{ $json.ai_category }}\n*Age:* {{ Math.round((Date.now() - new Date($json.created_at).getTime()) / (1000 * 60 * 60)) }} hours\n\n_This ticket has exceeded the 48-hour SLA and requires immediate management attention._"
+            },
+            "id": "slack-escalate",
+            "name": "Escalate to Manager",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 1,
+            "position": [
+                1100,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "method": "PATCH",
+                "url": "http://localhost:5001/api/tickets/{{ $json.id }}",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "priority",
+                            "value": "critical"
+                        },
+                        {
+                            "name": "escalated",
+                            "value": "true"
+                        }
+                    ]
+                }
+            },
+            "id": "update-priority",
+            "name": "Mark as Critical",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1300,
+                200
+            ]
+        }
+    ],
+    "connections": {
+        "Run Every Hour": {
+            "main": [
+                [
+                    {
+                        "node": "Get All Tickets",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get All Tickets": {
+            "main": [
+                [
+                    {
+                        "node": "Filter Overdue (>24h)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Filter Overdue (>24h)": {
+            "main": [
+                [
+                    {
+                        "node": "Is Critical (>48h)?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Critical (>48h)?": {
+            "main": [
+                [
+                    {
+                        "node": "Escalate to Manager",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Send Reminder",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Escalate to Manager": {
+            "main": [
+                [
+                    {
+                        "node": "Mark as Critical",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {},
+    "staticData": null,
+    "tags": [],
+    "triggerCount": 0,
+    "updatedAt": "2026-02-06T12:30:00.000Z",
+    "versionId": "sla-v1"
+}

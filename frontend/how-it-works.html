@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - HR Ticket Triage</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .architecture-section {
+            padding: 2rem 0;
+        }
+
+        .workflow-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .workflow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            align-items: stretch;
+            margin: 2rem 0;
+        }
+
+        .workflow-step {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            max-width: 250px;
+            position: relative;
+        }
+
+        .workflow-step::after {
+            content: '→';
+            position: absolute;
+            right: -1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .workflow-step:last-child::after {
+            display: none;
+        }
+
+        .step-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .integrations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .integration-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .integration-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-color);
+        }
+
+        .integration-logo {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .integration-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .integration-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .tech-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .n8n-highlight {
+            background: linear-gradient(135deg, #ff6d5a, #f9a826);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        .benefits-list li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .benefits-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .diagram-container {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        .diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 800px;
+        }
+
+        .diagram-node {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .diagram-node.primary {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+        }
+
+        .diagram-node.ai {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.2));
+        }
+
+        .diagram-node.n8n {
+            border-color: #ff6d5a;
+            background: linear-gradient(135deg, rgba(255, 109, 90, 0.2), rgba(249, 168, 38, 0.2));
+        }
+
+        .diagram-arrow {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+        }
+
+        .node-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .node-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .workflow-step::after {
+                display: none;
+            }
+
+            .diagram {
+                flex-direction: column;
+                min-width: auto;
+            }
+
+            .diagram-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🎫</span>
+            <span>HR Ticket Triage</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Submit Ticket</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/workflows">Workflows</a>
+            <a href="/integrations-demo">Integrations</a>
+            <a href="/how-it-works" class="active">How It Works</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="page-header">
+            <h1 class="page-title">How It Works</h1>
+            <p class="page-subtitle">AI-powered automation with <span class="n8n-highlight">n8n</span> workflow
+                orchestration</p>
+        </header>
+
+        <!-- Workflow Overview -->
+        <section class="architecture-section">
+            <div class="workflow-container">
+                <h2 class="section-title">🔄 The Automation Flow</h2>
+                <p class="section-subtitle">From ticket submission to AI classification in seconds</p>
+
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="step-icon">📝</div>
+                        <div class="step-title">1. Submit</div>
+                        <div class="step-desc">Employee submits HR request via web form</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-icon">⚡</div>
+                        <div class="step-title">2. Webhook</div>
+                        <div class="step-desc">n8n receives ticket via webhook trigger</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-icon">🤖</div>
+                        <div class="step-title">3. AI Classify</div>
+                        <div class="step-desc">HuggingFace LLM categorizes the request</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-icon">📊</div>
+                        <div class="step-title">4. Route & Store</div>
+                        <div class="step-desc">Ticket routed to correct team with AI insights</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Architecture -->
+        <section class="architecture-section">
+            <h2 class="section-title">🏗️ Technical Architecture</h2>
+            <p class="section-subtitle">A visual breakdown of the system components</p>
+
+            <div class="diagram-container">
+                <div class="diagram">
+                    <div class="diagram-node primary">
+                        <div class="node-icon">👤</div>
+                        <div class="node-label">Employee</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node">
+                        <div class="node-icon">🌐</div>
+                        <div class="node-label">Web Form</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node n8n">
+                        <div class="node-icon">⚙️</div>
+                        <div class="node-label">n8n Workflow</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node ai">
+                        <div class="node-icon">🧠</div>
+                        <div class="node-label">HuggingFace AI</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node">
+                        <div class="node-icon">💾</div>
+                        <div class="node-label">Database</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node primary">
+                        <div class="node-icon">👥</div>
+                        <div class="node-label">HR Team</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tech-stack">
+                <div class="tech-badge">n8n Orchestration</div>
+                <div class="tech-badge">HuggingFace LLM</div>
+                <div class="tech-badge">Python Flask</div>
+                <div class="tech-badge">REST APIs</div>
+                <div class="tech-badge">Real-time Dashboard</div>
+            </div>
+        </section>
+
+        <!-- Why n8n -->
+        <section class="architecture-section">
+            <div class="workflow-container">
+                <h2 class="section-title">⚡ Why n8n?</h2>
+                <p class="section-subtitle">The open-source workflow automation platform that powers this POC</p>
+
+                <ul class="benefits-list">
+                    <li><strong>Visual Workflow Builder</strong> — Drag-and-drop interface for creating complex
+                        automations without code</li>
+                    <li><strong>400+ Integrations</strong> — Pre-built connectors for Salesforce, Workday, Slack, Teams,
+                        and more</li>
+                    <li><strong>Self-Hosted Option</strong> — Keep sensitive HR data on-premise for compliance</li>
+                    <li><strong>Webhook Triggers</strong> — Real-time event processing for instant ticket classification
+                    </li>
+                    <li><strong>Error Handling</strong> — Built-in retry logic and failure notifications</li>
+                    <li><strong>Audit Trail</strong> — Complete execution history for compliance and debugging</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Enterprise Integrations -->
+        <section class="architecture-section">
+            <h2 class="section-title">🔌 Enterprise Integrations</h2>
+            <p class="section-subtitle">This POC can easily connect to your existing HR tech stack</p>
+
+            <div class="integrations-grid">
+                <div class="integration-card">
+                    <div class="integration-logo">☁️</div>
+                    <div class="integration-name">Salesforce Service Cloud</div>
+                    <div class="integration-desc">
+                        Auto-create cases in Service Cloud with AI-assigned categories and priority levels.
+                        Sync ticket status bi-directionally.
+                    </div>
+                </div>
+
+                <div class="integration-card">
+                    <div class="integration-logo">👔</div>
+                    <div class="integration-name">Workday</div>
+                    <div class="integration-desc">
+                        Pull employee data for context enrichment. Route tickets based on department,
+                        location, or manager hierarchy.
+                    </div>
+                </div>
+
+                <div class="integration-card">
+                    <div class="integration-logo">🎯</div>
+                    <div class="integration-name">ServiceNow</div>
+                    <div class="integration-desc">
+                        Create incidents and HR cases automatically. Leverage existing approval
+                        workflows and SLA tracking.
+                    </div>
+                </div>
+
+                <div class="integration-card">
+                    <div class="integration-logo">💬</div>
+                    <div class="integration-name">Slack / Teams</div>
+                    <div class="integration-desc">
+                        Notify HR teams instantly on high-priority tickets. Allow employees to
+                        submit requests via chat.
+                    </div>
+                </div>
+
+                <div class="integration-card">
+                    <div class="integration-logo">📧</div>
+                    <div class="integration-name">Email (O365 / Gmail)</div>
+                    <div class="integration-desc">
+                        Parse incoming HR emails and auto-create tickets. Send confirmation
+                        and status update notifications.
+                    </div>
+                </div>
+
+                <div class="integration-card">
+                    <div class="integration-logo">📁</div>
+                    <div class="integration-name">SharePoint / Confluence</div>
+                    <div class="integration-desc">
+                        Link to relevant policy documents. Auto-attach knowledge base articles
+                        based on AI classification.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Capabilities -->
+        <section class="architecture-section">
+            <div class="workflow-container">
+                <h2 class="section-title">🧠 AI Capabilities</h2>
+                <p class="section-subtitle">Powered by HuggingFace zero-shot classification</p>
+
+                <ul class="benefits-list">
+                    <li><strong>Zero-Shot Classification</strong> — No training data required, works out-of-the-box</li>
+                    <li><strong>8 HR Categories</strong> — Benefits, PTO, Payroll, Policy, Onboarding, Offboarding,
+                        Complaints, General</li>
+                    <li><strong>Confidence Scoring</strong> — Each classification includes a confidence percentage</li>
+                    <li><strong>Auto-Generated Responses</strong> — Suggested replies based on ticket category</li>
+                    <li><strong>Extensible</strong> — Easy to fine-tune or swap models for better accuracy</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>HR Ticket Triage POC • Powered by n8n + HuggingFace AI</p>
+    </footer>
+</body>
+
+</html>

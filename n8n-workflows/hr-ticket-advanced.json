@@ -1,0 +1,323 @@
+{
+    "name": "HR Ticket Triage - Advanced Multi-Branch",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "hr-ticket-advanced",
+                "responseMode": "responseNode",
+                "options": {}
+            },
+            "id": "webhook-1",
+            "name": "Webhook - Receive Ticket",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "inputs",
+                            "value": "={{ $json.description }}"
+                        },
+                        {
+                            "name": "parameters",
+                            "value": "={\"candidate_labels\": [\"Benefits\", \"PTO\", \"Payroll\", \"Policy\", \"Onboarding\", \"Offboarding\", \"Complaint\", \"General\"]}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "ai-classify",
+            "name": "AI Classification",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                450,
+                300
+            ],
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "1",
+                    "name": "HuggingFace API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.labels[0] }}",
+                            "operation": "equals",
+                            "value2": "Complaint"
+                        }
+                    ]
+                }
+            },
+            "id": "if-complaint",
+            "name": "Is Complaint?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                650,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.labels[0] }}",
+                            "operation": "contains",
+                            "value2": "PTO"
+                        }
+                    ]
+                }
+            },
+            "id": "if-pto",
+            "name": "Is PTO?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                650,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "channel": "#hr-alerts",
+                "text": "🚨 *URGENT: Employee Complaint Received*\n\n*From:* {{ $node['Webhook - Receive Ticket'].json.employee_name }}\n*Subject:* {{ $node['Webhook - Receive Ticket'].json.subject }}\n*Description:* {{ $node['Webhook - Receive Ticket'].json.description }}\n*Confidence:* {{ Math.round($json.scores[0] * 100) }}%\n\n_This requires immediate attention from HR leadership._",
+                "otherOptions": {
+                    "includeLinkToWorkflow": false
+                }
+            },
+            "id": "slack-urgent",
+            "name": "Slack Alert - Urgent",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 1,
+            "position": [
+                900,
+                100
+            ],
+            "credentials": {
+                "slackApi": {
+                    "id": "2",
+                    "name": "Slack API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "fromEmail": "hr-system@company.com",
+                "toEmail": "={{ $node['Webhook - Receive Ticket'].json.email }}",
+                "subject": "Your HR Request Has Been Received - #{{ $node['Webhook - Receive Ticket'].json.id }}",
+                "html": "<h2>Thank you for your HR request</h2><p>We have received your inquiry regarding <strong>{{ $node['Webhook - Receive Ticket'].json.subject }}</strong>.</p><p>Our team will review and respond within 24-48 hours.</p><p><strong>Ticket ID:</strong> {{ $node['Webhook - Receive Ticket'].json.id }}</p><p>Best regards,<br>HR Team</p>"
+            },
+            "id": "email-confirm",
+            "name": "Send Confirmation Email",
+            "type": "n8n-nodes-base.emailSend",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "event",
+                "operation": "create",
+                "calendar": "primary",
+                "start": "={{ $node['Webhook - Receive Ticket'].json.requested_date }}",
+                "end": "={{ $node['Webhook - Receive Ticket'].json.requested_date }}",
+                "summary": "PTO Request - {{ $node['Webhook - Receive Ticket'].json.employee_name }}",
+                "additionalFields": {
+                    "description": "{{ $node['Webhook - Receive Ticket'].json.description }}"
+                }
+            },
+            "id": "calendar-hold",
+            "name": "Create Calendar Hold",
+            "type": "n8n-nodes-base.googleCalendar",
+            "typeVersion": 1,
+            "position": [
+                900,
+                500
+            ],
+            "credentials": {
+                "googleCalendarOAuth2Api": {
+                    "id": "3",
+                    "name": "Google Calendar"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "PATCH",
+                "url": "http://localhost:5001/api/tickets/{{ $node['Webhook - Receive Ticket'].json.id }}",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "ai_category",
+                            "value": "={{ $node['AI Classification'].json.labels[0] }}"
+                        },
+                        {
+                            "name": "ai_confidence",
+                            "value": "={{ $node['AI Classification'].json.scores[0] }}"
+                        },
+                        {
+                            "name": "status",
+                            "value": "classified"
+                        },
+                        {
+                            "name": "priority",
+                            "value": "={{ $node['AI Classification'].json.labels[0] === 'Complaint' ? 'high' : 'normal' }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "update-ticket",
+            "name": "Update Ticket in Database",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1150,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ JSON.stringify({ success: true, category: $node['AI Classification'].json.labels[0], confidence: $node['AI Classification'].json.scores[0], message: 'Ticket processed successfully' }) }}"
+            },
+            "id": "respond-success",
+            "name": "Respond to Webhook",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1350,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook - Receive Ticket": {
+            "main": [
+                [
+                    {
+                        "node": "AI Classification",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Classification": {
+            "main": [
+                [
+                    {
+                        "node": "Is Complaint?",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Is PTO?",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Send Confirmation Email",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Complaint?": {
+            "main": [
+                [
+                    {
+                        "node": "Slack Alert - Urgent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                []
+            ]
+        },
+        "Is PTO?": {
+            "main": [
+                [
+                    {
+                        "node": "Create Calendar Hold",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                []
+            ]
+        },
+        "Slack Alert - Urgent": {
+            "main": [
+                [
+                    {
+                        "node": "Update Ticket in Database",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send Confirmation Email": {
+            "main": [
+                [
+                    {
+                        "node": "Update Ticket in Database",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Calendar Hold": {
+            "main": [
+                [
+                    {
+                        "node": "Update Ticket in Database",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update Ticket in Database": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {},
+    "staticData": null,
+    "tags": [],
+    "triggerCount": 0,
+    "updatedAt": "2026-02-06T12:30:00.000Z",
+    "versionId": "advanced-v1"
+}

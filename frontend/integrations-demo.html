@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration Simulator - HR Ticket Triage</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .sim-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .sim-intro {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .sim-intro p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .integration-simulator {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .sim-header-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sim-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .sim-logo.slack {
+            background: linear-gradient(135deg, #611f69, #e01e5a);
+        }
+
+        .sim-logo.workday {
+            background: linear-gradient(135deg, #f68b1e, #ffcd00);
+        }
+
+        .sim-logo.servicenow {
+            background: linear-gradient(135deg, #81b5a1, #293e40);
+        }
+
+        .sim-logo.teams {
+            background: linear-gradient(135deg, #5059c9, #7b83eb);
+        }
+
+        .sim-title {
+            flex: 1;
+        }
+
+        .sim-title h3 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .sim-title span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .sim-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--success-color);
+        }
+
+        .sim-status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .sim-body {
+            padding: 1.5rem;
+        }
+
+        .sim-trigger {
+            margin-bottom: 1rem;
+        }
+
+        .sim-trigger label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .sim-trigger select,
+        .sim-trigger input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .sim-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 1rem;
+        }
+
+        .sim-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .sim-output {
+            background: #1e1e2e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .sim-output-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .sim-output-body {
+            padding: 1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .json-key {
+            color: #9cdcfe;
+        }
+
+        .json-string {
+            color: #ce9178;
+        }
+
+        .json-number {
+            color: #b5cea8;
+        }
+
+        .json-boolean {
+            color: #569cd6;
+        }
+
+        /* Slack-specific styling */
+        .slack-message {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #1d1c1d;
+        }
+
+        .slack-message-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .slack-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #611f69, #e01e5a);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .slack-sender {
+            font-weight: 700;
+            color: #1d1c1d;
+        }
+
+        .slack-time {
+            font-size: 0.75rem;
+            color: #616061;
+        }
+
+        .slack-content {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .slack-content strong {
+            font-weight: 700;
+        }
+
+        .slack-alert {
+            border-left: 4px solid #e01e5a;
+            padding-left: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* ServiceNow-specific styling */
+        .snow-case {
+            background: #f3f3f3;
+            border-radius: 8px;
+            padding: 0;
+            color: #333;
+            overflow: hidden;
+        }
+
+        .snow-header {
+            background: #293e40;
+            color: white;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .snow-case-id {
+            font-weight: 600;
+        }
+
+        .snow-badge {
+            background: #81b5a1;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .snow-body {
+            padding: 1rem;
+        }
+
+        .snow-field {
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
+
+        .snow-label {
+            width: 120px;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .snow-value {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+
+        /* Workday styling */
+        .workday-card {
+            background: white;
+            border-radius: 8px;
+            color: #333;
+            overflow: hidden;
+        }
+
+        .workday-header {
+            background: linear-gradient(135deg, #f68b1e, #ffcd00);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .workday-avatar {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .workday-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .workday-title {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .workday-body {
+            padding: 1rem;
+        }
+
+        .workday-field {
+            display: flex;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .workday-field:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .integration-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🎫</span>
+            <span>HR Ticket Triage</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Submit Ticket</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/workflows">Workflows</a>
+            <a href="/integrations-demo" class="active">Integrations</a>
+            <a href="/how-it-works">How It Works</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="sim-header">
+            <h1 class="page-title">Integration Simulator</h1>
+            <p class="page-subtitle">See how n8n connects to enterprise systems</p>
+        </header>
+
+        <div class="sim-intro">
+            <p>These simulations show what the API responses and notifications would look like when n8n workflows
+                connect to enterprise HR systems. Click the buttons to see live mock responses.</p>
+        </div>
+
+        <div class="integration-grid">
+            <!-- Slack Integration -->
+            <div class="integration-simulator">
+                <div class="sim-header-bar">
+                    <div class="sim-logo slack">💬</div>
+                    <div class="sim-title">
+                        <h3>Slack</h3>
+                        <span>Send HR Alerts</span>
+                    </div>
+                    <div class="sim-status">Connected</div>
+                </div>
+                <div class="sim-body">
+                    <div class="sim-trigger">
+                        <label>Notification Type</label>
+                        <select id="slack-type">
+                            <option value="alert">🚨 Urgent Complaint Alert</option>
+                            <option value="reminder">⏰ SLA Reminder</option>
+                            <option value="resolved">✅ Ticket Resolved</option>
+                        </select>
+                    </div>
+                    <button class="sim-btn" onclick="simulateSlack()">Send Notification</button>
+                    <div class="sim-output" id="slack-output" style="display: none;">
+                        <div class="sim-output-header">📤 Slack Message Preview</div>
+                        <div class="sim-output-body">
+                            <div class="slack-message" id="slack-message"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workday Integration -->
+            <div class="integration-simulator">
+                <div class="sim-header-bar">
+                    <div class="sim-logo workday">👔</div>
+                    <div class="sim-title">
+                        <h3>Workday</h3>
+                        <span>Employee Lookup</span>
+                    </div>
+                    <div class="sim-status">Connected</div>
+                </div>
+                <div class="sim-body">
+                    <div class="sim-trigger">
+                        <label>Employee Email</label>
+                        <input type="text" id="workday-email" value="john.doe@company.com" placeholder="Enter email...">
+                    </div>
+                    <button class="sim-btn" onclick="simulateWorkday()">Lookup Employee</button>
+                    <div class="sim-output" id="workday-output" style="display: none;">
+                        <div class="sim-output-header">📋 Workday Employee Record</div>
+                        <div class="sim-output-body" id="workday-card"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ServiceNow Integration -->
+            <div class="integration-simulator">
+                <div class="sim-header-bar">
+                    <div class="sim-logo servicenow">🎯</div>
+                    <div class="sim-title">
+                        <h3>ServiceNow</h3>
+                        <span>Create HR Case</span>
+                    </div>
+                    <div class="sim-status">Connected</div>
+                </div>
+                <div class="sim-body">
+                    <div class="sim-trigger">
+                        <label>Case Type</label>
+                        <select id="snow-type">
+                            <option value="benefits">Benefits Inquiry</option>
+                            <option value="pto">PTO Request</option>
+                            <option value="complaint">Employee Complaint</option>
+                        </select>
+                    </div>
+                    <button class="sim-btn" onclick="simulateServiceNow()">Create Case</button>
+                    <div class="sim-output" id="snow-output" style="display: none;">
+                        <div class="sim-output-header">🎫 ServiceNow Case Created</div>
+                        <div class="sim-output-body" id="snow-case"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Response Viewer -->
+            <div class="integration-simulator">
+                <div class="sim-header-bar">
+                    <div class="sim-logo">🔗</div>
+                    <div class="sim-title">
+                        <h3>Raw API Response</h3>
+                        <span>See the JSON data</span>
+                    </div>
+                    <div class="sim-status">Ready</div>
+                </div>
+                <div class="sim-body">
+                    <div class="sim-trigger">
+                        <label>API Endpoint</label>
+                        <select id="api-endpoint">
+                            <option value="classify">HuggingFace Classification</option>
+                            <option value="workday">Workday Employee API</option>
+                            <option value="slack">Slack Post Message</option>
+                            <option value="servicenow">ServiceNow Create Case</option>
+                        </select>
+                    </div>
+                    <button class="sim-btn" onclick="simulateAPI()">Call API</button>
+                    <div class="sim-output" id="api-output" style="display: none;">
+                        <div class="sim-output-header">📡 API Response (200 OK)</div>
+                        <div class="sim-output-body" id="api-json"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>HR Ticket Triage POC • Powered by n8n + HuggingFace AI</p>
+    </footer>
+
+    <script>
+        function simulateSlack() {
+            const type = document.getElementById('slack-type').value;
+            const output = document.getElementById('slack-output');
+            const message = document.getElementById('slack-message');
+
+            const messages = {
+                alert: `
+                    <div class="slack-message-header">
+                        <div class="slack-avatar">🤖</div>
+                        <span class="slack-sender">HR Triage Bot</span>
+                        <span class="slack-time">just now</span>
+                    </div>
+                    <div class="slack-content">
+                        <div class="slack-alert">
+                            <strong>🚨 URGENT: Employee Complaint Received</strong><br><br>
+                            <strong>From:</strong> Sarah Johnson<br>
+                            <strong>Subject:</strong> Workplace Harassment Concern<br>
+                            <strong>AI Confidence:</strong> 87%<br><br>
+                            <em>This requires immediate attention from HR leadership.</em>
+                        </div>
+                    </div>
+                `,
+                reminder: `
+                    <div class="slack-message-header">
+                        <div class="slack-avatar">⏰</div>
+                        <span class="slack-sender">HR Triage Bot</span>
+                        <span class="slack-time">just now</span>
+                    </div>
+                    <div class="slack-content">
+                        <strong>⏰ Reminder: Pending HR Ticket</strong><br><br>
+                        <strong>Ticket ID:</strong> TKT-2024-0892<br>
+                        <strong>Subject:</strong> Benefits enrollment question<br>
+                        <strong>Category:</strong> Benefits<br>
+                        <strong>Age:</strong> 26 hours<br><br>
+                        <em>Please review and respond to this ticket.</em>
+                    </div>
+                `,
+                resolved: `
+                    <div class="slack-message-header">
+                        <div class="slack-avatar">✅</div>
+                        <span class="slack-sender">HR Triage Bot</span>
+                        <span class="slack-time">just now</span>
+                    </div>
+                    <div class="slack-content">
+                        <strong>✅ Ticket Resolved</strong><br><br>
+                        <strong>Ticket ID:</strong> TKT-2024-0891<br>
+                        <strong>Subject:</strong> Direct deposit update<br>
+                        <strong>Resolved by:</strong> Jane Smith<br>
+                        <strong>Resolution time:</strong> 4 hours 23 minutes
+                    </div>
+                `
+            };
+
+            message.innerHTML = messages[type];
+            output.style.display = 'block';
+        }
+
+        function simulateWorkday() {
+            const email = document.getElementById('workday-email').value;
+            const output = document.getElementById('workday-output');
+            const card = document.getElementById('workday-card');
+
+            const name = email.split('@')[0].split('.').map(n => n.charAt(0).toUpperCase() + n.slice(1)).join(' ');
+
+            card.innerHTML = `
+                <div class="workday-card">
+                    <div class="workday-header">
+                        <div class="workday-avatar">👤</div>
+                        <div>
+                            <div class="workday-name">${name}</div>
+                            <div class="workday-title">Senior Software Engineer</div>
+                        </div>
+                    </div>
+                    <div class="workday-body">
+                        <div class="workday-field">
+                            <span class="snow-label">Employee ID</span>
+                            <span class="snow-value">EMP-${Math.floor(10000 + Math.random() * 90000)}</span>
+                        </div>
+                        <div class="workday-field">
+                            <span class="snow-label">Department</span>
+                            <span class="snow-value">Engineering</span>
+                        </div>
+                        <div class="workday-field">
+                            <span class="snow-label">Manager</span>
+                            <span class="snow-value">Michael Chen</span>
+                        </div>
+                        <div class="workday-field">
+                            <span class="snow-label">Location</span>
+                            <span class="snow-value">San Francisco, CA</span>
+                        </div>
+                        <div class="workday-field">
+                            <span class="snow-label">Hire Date</span>
+                            <span class="snow-value">March 15, 2022</span>
+                        </div>
+                        <div class="workday-field">
+                            <span class="snow-label">PTO Balance</span>
+                            <span class="snow-value">12 days remaining</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            output.style.display = 'block';
+        }
+
+        function simulateServiceNow() {
+            const type = document.getElementById('snow-type').value;
+            const output = document.getElementById('snow-output');
+            const caseDiv = document.getElementById('snow-case');
+
+            const caseNum = 'HR' + Math.floor(1000000 + Math.random() * 9000000);
+            const categories = {
+                benefits: { cat: 'Benefits Inquiry', priority: 'Medium', sla: '48 hours' },
+                pto: { cat: 'Time Off Request', priority: 'Low', sla: '72 hours' },
+                complaint: { cat: 'Employee Relations', priority: 'High', sla: '24 hours' }
+            };
+            const data = categories[type];
+
+            caseDiv.innerHTML = `
+                <div class="snow-case">
+                    <div class="snow-header">
+                        <span class="snow-case-id">${caseNum}</span>
+                        <span class="snow-badge">New</span>
+                    </div>
+                    <div class="snow-body">
+                        <div class="snow-field">
+                            <span class="snow-label">Category</span>
+                            <span class="snow-value">${data.cat}</span>
+                        </div>
+                        <div class="snow-field">
+                            <span class="snow-label">Priority</span>
+                            <span class="snow-value">${data.priority}</span>
+                        </div>
+                        <div class="snow-field">
+                            <span class="snow-label">SLA Target</span>
+                            <span class="snow-value">${data.sla}</span>
+                        </div>
+                        <div class="snow-field">
+                            <span class="snow-label">Assigned To</span>
+                            <span class="snow-value">HR Team Queue</span>
+                        </div>
+                        <div class="snow-field">
+                            <span class="snow-label">AI Category</span>
+                            <span class="snow-value">Matched (89% confidence)</span>
+                        </div>
+                        <div class="snow-field">
+                            <span class="snow-label">Created</span>
+                            <span class="snow-value">${new Date().toLocaleString()}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            output.style.display = 'block';
+        }
+
+        function simulateAPI() {
+            const endpoint = document.getElementById('api-endpoint').value;
+            const output = document.getElementById('api-output');
+            const json = document.getElementById('api-json');
+
+            const responses = {
+                classify: {
+                    labels: ["Benefits", "PTO", "Payroll", "Policy", "General"],
+                    scores: [0.6234, 0.1823, 0.0912, 0.0654, 0.0377],
+                    sequence: "What dental plans are available for my family?"
+                },
+                workday: {
+                    employee_id: "EMP-48291",
+                    full_name: "John Doe",
+                    email: "john.doe@company.com",
+                    department: "Engineering",
+                    manager: { name: "Michael Chen", email: "m.chen@company.com" },
+                    location: { city: "San Francisco", country: "USA" },
+                    hire_date: "2022-03-15",
+                    pto_balance: { available: 12, used: 8, total: 20 }
+                },
+                slack: {
+                    ok: true,
+                    channel: "C0485QPMZ2",
+                    ts: "1678901234.567890",
+                    message: {
+                        type: "message",
+                        text: "🚨 URGENT: Employee Complaint Received",
+                        user: "U0HR_BOT",
+                        ts: "1678901234.567890"
+                    }
+                },
+                servicenow: {
+                    result: {
+                        sys_id: "a7c8e9f0g1h2i3j4k5l6",
+                        number: "HR1234567",
+                        short_description: "Benefits enrollment question",
+                        state: "1",
+                        priority: "3",
+                        category: "Benefits",
+                        assignment_group: "HR Team",
+                        opened_at: new Date().toISOString(),
+                        ai_classification: { category: "Benefits", confidence: 0.89 }
+                    }
+                }
+            };
+
+            json.innerHTML = formatJSON(responses[endpoint]);
+            output.style.display = 'block';
+        }
+
+        function formatJSON(obj) {
+            return JSON.stringify(obj, null, 2)
+                .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+                .replace(/"([^"]+)"/g, '<span class="json-string">"$1"</span>')
+                .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
+                .replace(/: (true|false)/g, ': <span class="json-boolean">$1</span>');
+        }
+    </script>
+</body>
+
+</html>
