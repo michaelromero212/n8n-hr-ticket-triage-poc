@@ -38,7 +38,7 @@ This Proof of Concept demonstrates a complete **AI Operations** workflow that:
 ### Submit Ticket Form
 Employees submit HR requests through a clean, intuitive form. The AI status indicator shows real-time connection to the classification service.
 
-![Submit Ticket Form](screenshots/submit-form.png)
+![Submit Ticket Form](screenshots/submit-form.jpg)
 
 ---
 
@@ -52,28 +52,28 @@ Monitor all tickets in real-time with analytics on category distribution and res
 ### Ticket Details & AI Suggested Response
 View full ticket details including AI classification confidence and auto-generated response suggestions.
 
-![Ticket Details](screenshots/ticket-details.png)
+![Ticket Details](screenshots/ticket-details.jpg)
 
 ---
 
 ### n8n Workflow Automation
 Visual workflow showing the automation pipeline: Webhook → Google Sheets + Slack notifications.
 
-![n8n Workflow](screenshots/n8n-workflow.png)
+![n8n Workflow](screenshots/n8n-workflow.jpg)
 
 ---
 
 ### Slack Notifications
 HR team receives instant, formatted notifications for each new ticket submission.
 
-![Slack Notification](screenshots/slack-notification.png)
+![Slack Notification](screenshots/slack-notification.jpg)
 
 ---
 
 ### Google Sheets Ticket Log
 All tickets are automatically logged to Google Sheets with full details and AI classification results.
 
-![Google Sheets Log](screenshots/google-sheets-log.png)
+![Google Sheets Log](screenshots/google-sheets-log.jpg)
 
 ---
 
