@@ -492,5 +492,18 @@
     "created_at": "2026-02-07T23:12:17.866980+00:00",
     "updated_at": "2026-02-07T23:30:05.916565+00:00",
     "resolved_by": "Dashboard User"
+  },
+  {
+    "id": "46fab3d1-9012-40d9-9ac8-26806c3b3ffe",
+    "employee_name": "Speed Test User",
+    "employee_email": "speedtest@company.com",
+    "subject": "Testing async ticket submission",
+    "description": "This is a test to verify the form submits quickly without waiting for AI classification.",
+    "status": "classified",
+    "ai_category": "PTO",
+    "ai_confidence": 0.2873389720916748,
+    "ai_response": "Your PTO request has been received. Please ensure your manager approves the request in the HR system. Standard PTO requests are processed within 1 business day.",
+    "created_at": "2026-02-08T14:46:43.793730+00:00",
+    "updated_at": "2026-02-08T14:46:54.569361+00:00"
   }
 ]

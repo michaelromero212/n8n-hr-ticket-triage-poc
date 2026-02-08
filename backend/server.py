@@ -251,7 +251,7 @@ def get_tickets():
 
 @app.route('/api/tickets', methods=['POST'])
 def create_ticket():
-    """Create a new ticket and classify with AI."""
+    """Create a new ticket - returns immediately, processes AI in background."""
     data = request.json
     
     ticket = {
@@ -268,22 +268,44 @@ def create_ticket():
         'updated_at': datetime.now(timezone.utc).isoformat()
     }
     
-    # Classify ticket using HuggingFace API
-    classification = classify_ticket(ticket['description'])
-    if classification:
-        ticket['ai_category'] = classification['category']
-        ticket['ai_confidence'] = classification['confidence']
-        ticket['status'] = 'classified'
-        ticket['ai_response'] = generate_auto_response(classification['category'])
-    
+    # Save ticket immediately (pending status)
     tickets = load_tickets()
     tickets.append(ticket)
     save_tickets(tickets)
     
-    # Trigger n8n workflow for automation
-    n8n_result = trigger_n8n_workflow(ticket)
-    ticket['n8n_triggered'] = n8n_result.get('success', False)
+    # Process AI classification and n8n in background thread
+    import threading
+    def process_ticket_async(ticket_id):
+        """Background task to classify ticket and trigger n8n."""
+        try:
+            tickets = load_tickets()
+            ticket = next((t for t in tickets if t['id'] == ticket_id), None)
+            if not ticket:
+                return
+            
+            # Classify with AI
+            classification = classify_ticket(ticket['description'])
+            if classification:
+                ticket['ai_category'] = classification['category']
+                ticket['ai_confidence'] = classification['confidence']
+                ticket['status'] = 'classified'
+                ticket['ai_response'] = generate_auto_response(classification['category'])
+                ticket['updated_at'] = datetime.now(timezone.utc).isoformat()
+                save_tickets(tickets)
+                print(f"✅ Async: Ticket {ticket_id[:8]} classified as {classification['category']}")
+            
+            # Trigger n8n workflow
+            trigger_n8n_workflow(ticket)
+            
+        except Exception as e:
+            print(f"❌ Async processing error: {e}")
     
+    # Start background processing
+    thread = threading.Thread(target=process_ticket_async, args=(ticket['id'],))
+    thread.daemon = True
+    thread.start()
+    
+    # Return immediately with pending ticket
     return jsonify(ticket), 201
 
 

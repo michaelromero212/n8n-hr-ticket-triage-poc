@@ -79,9 +79,18 @@
         <div class="card">
             <div class="card-header">
                 <h3>Recent Tickets</h3>
-                <button class="btn btn-secondary btn-sm" onclick="refreshData()">
-                    🔄 Refresh
-                </button>
+                <div class="table-controls">
+                    <label for="pageSize">Show:</label>
+                    <select id="pageSize" onchange="changePageSize()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <button class="btn btn-secondary btn-sm" onclick="refreshData()">
+                        🔄 Refresh
+                    </button>
+                </div>
             </div>
             <div class="table-container">
                 <table class="tickets-table">
@@ -102,6 +111,11 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="pagination" id="paginationControls">
+                <button class="btn btn-secondary btn-sm" id="prevPage" onclick="changePage(-1)">← Previous</button>
+                <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                <button class="btn btn-secondary btn-sm" id="nextPage" onclick="changePage(1)">Next →</button>
             </div>
         </div>
 

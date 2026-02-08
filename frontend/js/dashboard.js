@@ -9,6 +9,11 @@ const API_BASE = '';
 let categoryChart = null;
 let statusChart = null;
 
+// Pagination state
+let currentPage = 1;
+let pageSize = 10;
+let allTickets = [];
+
 // Chart colors
 const COLORS = {
     primary: '#6366f1',
@@ -59,9 +64,12 @@ async function refreshData() {
             fetchAnalytics()
         ]);
 
+        // Store all tickets globally for pagination
+        allTickets = tickets;
+
         updateStats(analytics);
         updateCharts(analytics);
-        updateTable(tickets);
+        updateTable();
 
     } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -208,12 +216,12 @@ function updateStatusChart(statusData) {
 }
 
 /**
- * Update tickets table
+ * Update tickets table with pagination
  */
-function updateTable(tickets) {
+function updateTable() {
     const tbody = document.getElementById('ticketsTableBody');
 
-    if (!tickets || tickets.length === 0) {
+    if (!allTickets || allTickets.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="7" class="empty-state">
@@ -221,13 +229,23 @@ function updateTable(tickets) {
                 </td>
             </tr>
         `;
+        updatePaginationControls(0);
         return;
     }
 
     // Sort by created_at descending
-    tickets.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    allTickets.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    tbody.innerHTML = tickets.map(ticket => `
+    // Calculate pagination
+    const totalPages = Math.ceil(allTickets.length / pageSize);
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const pageTickets = allTickets.slice(startIndex, endIndex);
+
+    tbody.innerHTML = pageTickets.map(ticket => `
         <tr onclick="showTicketDetail('${ticket.id}')">
             <td><code>${ticket.id.substring(0, 8)}...</code></td>
             <td>${escapeHtml(ticket.employee_name)}</td>
@@ -238,6 +256,44 @@ function updateTable(tickets) {
             <td>${formatDate(ticket.created_at)}</td>
         </tr>
     `).join('');
+
+    updatePaginationControls(allTickets.length);
+}
+
+/**
+ * Update pagination controls
+ */
+function updatePaginationControls(totalItems) {
+    const totalPages = Math.ceil(totalItems / pageSize) || 1;
+    const pageInfo = document.getElementById('pageInfo');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${totalItems} tickets)`;
+    prevBtn.disabled = currentPage <= 1;
+    nextBtn.disabled = currentPage >= totalPages;
+}
+
+/**
+ * Change page
+ */
+function changePage(delta) {
+    const totalPages = Math.ceil(allTickets.length / pageSize);
+    const newPage = currentPage + delta;
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        updateTable();
+    }
+}
+
+/**
+ * Change page size
+ */
+function changePageSize() {
+    const select = document.getElementById('pageSize');
+    pageSize = parseInt(select.value, 10);
+    currentPage = 1; // Reset to first page
+    updateTable();
 }
 
 /**

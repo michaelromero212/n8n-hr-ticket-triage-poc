@@ -467,6 +467,53 @@ body {
     padding: var(--spacing-2xl) !important;
 }
 
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg) 0;
+    border-top: 1px solid var(--border-color);
+    margin-top: var(--spacing-md);
+}
+
+.page-info {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.table-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.table-controls label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.table-controls select {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.table-controls select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Status badges */
 .badge {
     display: inline-block;
