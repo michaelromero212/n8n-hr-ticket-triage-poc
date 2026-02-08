@@ -45,7 +45,7 @@ Employees submit HR requests through a clean, intuitive form. The AI status indi
 ### AI-Powered Dashboard
 Monitor all tickets in real-time with analytics on category distribution and resolution status.
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/dashboard.jpg)
 
 ---
 
@@ -220,7 +220,7 @@ n8n-hr-ticket-triage-poc/
 ├── README.md                 # This file
 ├── screenshots/              # App screenshots for docs
 │   ├── submit-form.png
-│   ├── dashboard.png
+│   ├── dashboard.jpg
 │   ├── ticket-details.png
 │   ├── n8n-workflow.png
 │   ├── slack-notification.png
