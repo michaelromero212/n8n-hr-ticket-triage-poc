@@ -70,12 +70,12 @@
     "employee_email": "demo@test.com",
     "subject": "Benefits Enrollment Question",
     "description": "I recently got married and need to add my spouse to my health insurance. What forms do I need to fill out and what is the deadline for open enrollment changes?",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "Onboarding",
+    "ai_confidence": 0.6241733431816101,
+    "ai_response": "Welcome! Your onboarding question has been routed to our New Hire team. They will reach out within 24 hours to assist you.",
     "created_at": "2026-02-06T20:09:32.015441+00:00",
-    "updated_at": "2026-02-06T20:09:32.015453+00:00"
+    "updated_at": "2026-02-07T23:34:42.143036+00:00"
   },
   {
     "id": "34d417b7-0910-4952-8c22-9e7bc79f053f",
@@ -148,12 +148,12 @@
     "employee_email": "michael@test.com",
     "subject": "PTO Request for Next Week",
     "description": "I would like to request PTO for Monday and Tuesday next week for a doctor's appointment.",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "PTO",
+    "ai_confidence": 0.7552595138549805,
+    "ai_response": "Your PTO request has been received. Please ensure your manager approves the request in the HR system. Standard PTO requests are processed within 1 business day.",
     "created_at": "2026-02-06T22:26:26.155076+00:00",
-    "updated_at": "2026-02-06T22:26:26.155087+00:00"
+    "updated_at": "2026-02-07T23:34:53.239721+00:00"
   },
   {
     "id": "d097650c-5271-48eb-89c7-7b885878c719",
@@ -161,12 +161,12 @@
     "employee_email": "test.user@company.com",
     "subject": "Question about PTO balance",
     "description": "I would like to know how many PTO days I have remaining this year and how to request time off for next month.",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "PTO",
+    "ai_confidence": 0.4946262538433075,
+    "ai_response": "Your PTO request has been received. Please ensure your manager approves the request in the HR system. Standard PTO requests are processed within 1 business day.",
     "created_at": "2026-02-07T01:50:53.176691+00:00",
-    "updated_at": "2026-02-07T01:50:53.176700+00:00"
+    "updated_at": "2026-02-07T23:35:05.194464+00:00"
   },
   {
     "id": "f4b36ed7-7338-404a-9cb9-3c1470b807ef",
@@ -174,12 +174,12 @@
     "employee_email": "jane.smith@company.com",
     "subject": "Benefits enrollment question",
     "description": "I am a new employee and I would like to understand what health benefits are available and when my enrollment deadline is.",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "Onboarding",
+    "ai_confidence": 0.5293135643005371,
+    "ai_response": "Welcome! Your onboarding question has been routed to our New Hire team. They will reach out within 24 hours to assist you.",
     "created_at": "2026-02-07T01:53:55.366065+00:00",
-    "updated_at": "2026-02-07T01:53:55.366074+00:00"
+    "updated_at": "2026-02-07T23:35:17.093549+00:00"
   },
   {
     "id": "36415341-13a8-4ab5-8720-637ec6371378",
@@ -187,12 +187,12 @@
     "employee_email": "robert.chen@company.com",
     "subject": "Direct deposit not working",
     "description": "My last paycheck was not deposited into my bank account. I updated my direct deposit info last week but it seems it wasn't processed correctly.",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "Payroll",
+    "ai_confidence": 0.6451331973075867,
+    "ai_response": "We've received your payroll inquiry. Our payroll team processes requests within 2 business days. For urgent matters, please contact payroll@company.com directly.",
     "created_at": "2026-02-07T02:00:32.555255+00:00",
-    "updated_at": "2026-02-07T02:00:32.555271+00:00"
+    "updated_at": "2026-02-07T23:35:29.637250+00:00"
   },
   {
     "id": "7f9af8fc-3e0e-4f7f-a565-ac3a23442be6",
@@ -200,12 +200,12 @@
     "employee_email": "robert.chen@company.com",
     "subject": "Request for parental leave policy",
     "description": "Hi HR team, my wife and I are expecting our first child in March. I would like to understand our company's parental leave policy, including how many weeks of leave I'm entitled to and the process for requesting it. Thank you!",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "Policy",
+    "ai_confidence": 0.317997008562088,
+    "ai_response": "Thank you for your policy question. Our HR team will provide guidance within 24 hours. You can also reference the employee handbook at hr.company.com/policies.",
     "created_at": "2026-02-07T02:06:16.176014+00:00",
-    "updated_at": "2026-02-07T02:06:16.176029+00:00"
+    "updated_at": "2026-02-07T23:35:43.340895+00:00"
   },
   {
     "id": "e6689cad-b318-43f2-82b9-bf4caf6ab2ed",
@@ -213,12 +213,12 @@
     "employee_email": "maria.garcia@company.com",
     "subject": "401k contribution change request",
     "description": "Hello, I would like to increase my 401k contribution from 6% to 10% starting next pay period. Can you please help me with the paperwork required and confirm the deadline for changes to take effect?",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "Payroll",
+    "ai_confidence": 0.2513575851917267,
+    "ai_response": "We've received your payroll inquiry. Our payroll team processes requests within 2 business days. For urgent matters, please contact payroll@company.com directly.",
     "created_at": "2026-02-07T02:09:38.074901+00:00",
-    "updated_at": "2026-02-07T02:09:38.074937+00:00"
+    "updated_at": "2026-02-07T23:35:56.651449+00:00"
   },
   {
     "id": "b9501811-b4f2-426f-92bb-c3ff41cf70b3",
@@ -226,12 +226,12 @@
     "employee_email": "alex.thompson@company.com",
     "subject": "Remote work policy clarification",
     "description": "I recently moved to a new city and would like to understand if I can work fully remote. What is the company's policy on permanent remote work arrangements, and who do I need to get approval from?",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "Policy",
+    "ai_confidence": 0.41190412640571594,
+    "ai_response": "Thank you for your policy question. Our HR team will provide guidance within 24 hours. You can also reference the employee handbook at hr.company.com/policies.",
     "created_at": "2026-02-07T02:15:48.648787+00:00",
-    "updated_at": "2026-02-07T02:15:48.648886+00:00"
+    "updated_at": "2026-02-07T23:36:09.742746+00:00"
   },
   {
     "id": "d73c1f88-b1bc-44df-bfbc-d379bb530121",
@@ -239,12 +239,12 @@
     "employee_email": "alex.thompson@company.com",
     "subject": "Remote work policy clarification",
     "description": "I recently moved to a new city and would like to understand if I can work fully remote. What is the company's policy on permanent remote work arrangements, and who do I need to get approval from?",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "Policy",
+    "ai_confidence": 0.41190412640571594,
+    "ai_response": "Thank you for your policy question. Our HR team will provide guidance within 24 hours. You can also reference the employee handbook at hr.company.com/policies.",
     "created_at": "2026-02-07T02:17:21.419123+00:00",
-    "updated_at": "2026-02-07T02:17:21.419139+00:00"
+    "updated_at": "2026-02-07T23:36:22.941738+00:00"
   },
   {
     "id": "154d39d2-05d3-4f7d-a3ac-8ebf352a1743",
@@ -252,12 +252,12 @@
     "employee_email": "sarah.williams@company.com",
     "subject": "Expense reimbursement question",
     "description": "I submitted an expense report for a client dinner two weeks ago but haven't received reimbursement yet. The expense report ID is EXP-2024-0234. Can someone check the status?",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "Complaint",
+    "ai_confidence": 0.261465460062027,
+    "ai_response": "We take all workplace concerns seriously. Your matter has been flagged for priority review. An HR representative will contact you within 24 hours.",
     "created_at": "2026-02-07T02:23:02.655424+00:00",
-    "updated_at": "2026-02-07T02:23:02.655432+00:00"
+    "updated_at": "2026-02-07T23:36:35.938358+00:00"
   },
   {
     "id": "20ed9711-6054-43dd-91f0-0da610831555",
@@ -265,12 +265,12 @@
     "employee_email": "emily.davis@company.com",
     "subject": "Vacation day request",
     "description": "I would like to request 3 days of PTO from March 15-17 for a family vacation. Please let me know if this is approved.",
-    "status": "pending",
-    "ai_category": null,
-    "ai_confidence": null,
-    "ai_response": null,
+    "status": "classified",
+    "ai_category": "PTO",
+    "ai_confidence": 0.6401659846305847,
+    "ai_response": "Your PTO request has been received. Please ensure your manager approves the request in the HR system. Standard PTO requests are processed within 1 business day.",
     "created_at": "2026-02-07T02:30:50.249876+00:00",
-    "updated_at": "2026-02-07T02:30:50.249891+00:00"
+    "updated_at": "2026-02-07T23:36:47.837726+00:00"
   },
   {
     "id": "8e37409d-9721-4d7e-bb8d-13b50f5c3dfd",
@@ -278,12 +278,13 @@
     "employee_email": "marcus.johnson@company.com",
     "subject": "Need to take PTO next week",
     "description": "I'd like to request 2 days off on February 20th and 21st for a personal trip. Please approve my time off request.",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "PTO",
     "ai_confidence": 0.6301308870315552,
     "ai_response": "Your PTO request has been received. Please ensure your manager approves the request in the HR system. Standard PTO requests are processed within 1 business day.",
     "created_at": "2026-02-07T02:35:51.423748+00:00",
-    "updated_at": "2026-02-07T02:35:51.423769+00:00"
+    "updated_at": "2026-02-07T23:32:32.619672+00:00",
+    "resolved_by": "Troubleshoot Bot"
   },
   {
     "id": "bb47c658-ecc5-4b2a-b980-df4bf7ff8fbc",
@@ -291,12 +292,13 @@
     "employee_email": "lisa.chen@company.com",
     "subject": "Benefits enrollment deadline",
     "description": "When is the deadline to enroll in the health insurance plan? I'm a new employee starting next week and want to make sure I don't miss it.",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "Benefits",
     "ai_confidence": 0.36900120973587036,
     "ai_response": "Thank you for your benefits inquiry. Our HR Benefits team will review your request and respond within 24-48 hours. In the meantime, you can check our Benefits portal at hr.company.com/benefits.",
     "created_at": "2026-02-07T14:34:30.789296+00:00",
-    "updated_at": "2026-02-07T14:34:30.789330+00:00"
+    "updated_at": "2026-02-07T23:32:31.346294+00:00",
+    "resolved_by": "Troubleshoot Bot"
   },
   {
     "id": "e692e98c-bbbb-4239-8a14-20f1cee40091",
@@ -317,12 +319,13 @@
     "employee_email": "jennifer.martinez@company.com",
     "subject": "New employee onboarding process",
     "description": "I'm starting at the company next Monday. What documents do I need to bring on my first day and where should I report to?",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "Onboarding",
     "ai_confidence": 0.36575329303741455,
     "ai_response": "Welcome! Your onboarding question has been routed to our New Hire team. They will reach out within 24 hours to assist you.",
     "created_at": "2026-02-07T14:48:25.393998+00:00",
-    "updated_at": "2026-02-07T14:48:25.394041+00:00"
+    "updated_at": "2026-02-07T23:32:29.486410+00:00",
+    "resolved_by": "Troubleshoot Bot"
   },
   {
     "id": "7b7e1290-22eb-4942-857d-7ddabc21f4b7",
@@ -356,12 +359,13 @@
     "employee_email": "david.kim@company.com",
     "subject": "Work from home equipment stipend",
     "description": "I am setting up my home office. Do we have a stipend for purchasing a monitor and chair? If so, what is the process for reimbursement?",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "Benefits",
     "ai_confidence": 0.5041012763977051,
     "ai_response": "Thank you for your benefits inquiry. Our HR Benefits team will review your request and respond within 24-48 hours. In the meantime, you can check our Benefits portal at hr.company.com/benefits.",
     "created_at": "2026-02-07T16:23:18.692085+00:00",
-    "updated_at": "2026-02-07T16:23:18.692103+00:00"
+    "updated_at": "2026-02-07T23:32:26.901825+00:00",
+    "resolved_by": "Troubleshoot Bot"
   },
   {
     "id": "4ebe5891-3eb6-47c9-94a0-6ab620798bce",
@@ -369,12 +373,13 @@
     "employee_email": "sarah.jenkins@company.com",
     "subject": "New hire laptop issues",
     "description": "My new laptop is extremely slow and keeps crashing. I've only had it for 3 days. Can I get a replacement or have IT look at it?",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "Complaint",
     "ai_confidence": 0.8655179738998413,
     "ai_response": "We take all workplace concerns seriously. Your matter has been flagged for priority review. An HR representative will contact you within 24 hours.",
     "created_at": "2026-02-07T16:28:05.480574+00:00",
-    "updated_at": "2026-02-07T16:28:05.480604+00:00"
+    "updated_at": "2026-02-07T23:32:24.751134+00:00",
+    "resolved_by": "Troubleshoot Bot"
   },
   {
     "id": "af92f29c-2b1b-4b90-9e05-55b7e45e3d74",
@@ -382,12 +387,13 @@
     "employee_email": "chris.evans@company.com",
     "subject": "Relocation assistance inquiry",
     "description": "I am considering a move to the Atlanta office and would like to know what relocation assistance benefits are available for senior staff.",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "Benefits",
     "ai_confidence": 0.3981265127658844,
     "ai_response": "Thank you for your benefits inquiry. Our HR Benefits team will review your request and respond within 24-48 hours. In the meantime, you can check our Benefits portal at hr.company.com/benefits.",
     "created_at": "2026-02-07T16:30:19.263890+00:00",
-    "updated_at": "2026-02-07T16:30:19.263910+00:00"
+    "updated_at": "2026-02-07T23:32:22.359455+00:00",
+    "resolved_by": "Troubleshoot Bot"
   },
   {
     "id": "19b08177-90f6-4abd-af0d-307603ceae0b",
@@ -395,12 +401,13 @@
     "employee_email": "taylor.martinez@company.com",
     "subject": "Parental leave policy question",
     "description": "My partner and I are expecting our first child in June. Can you provide information about the company's parental leave policy and how to apply for it?",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "Policy",
     "ai_confidence": 0.3577905595302582,
     "ai_response": "Thank you for your policy question. Our HR team will provide guidance within 24 hours. You can also reference the employee handbook at hr.company.com/policies.",
     "created_at": "2026-02-07T16:43:25.716744+00:00",
-    "updated_at": "2026-02-07T16:43:25.716760+00:00"
+    "updated_at": "2026-02-07T23:32:20.013936+00:00",
+    "resolved_by": "Troubleshoot Bot"
   },
   {
     "id": "61a69ee8-4e06-4efe-8ff3-abfc48caddb5",
@@ -408,12 +415,13 @@
     "employee_email": "jordan.phillips@company.com",
     "subject": "Remote work equipment setup",
     "description": "I just started working remotely full-time and need to set up my home office. Do we have a stipend for purchasing a monitor and ergonomic chair? If so, what is the reimbursement process?",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "Benefits",
     "ai_confidence": 0.5057303309440613,
     "ai_response": "Thank you for your benefits inquiry. Our HR Benefits team will review your request and respond within 24-48 hours. In the meantime, you can check our Benefits portal at hr.company.com/benefits.",
     "created_at": "2026-02-07T18:05:08.582678+00:00",
-    "updated_at": "2026-02-07T18:05:08.582699+00:00"
+    "updated_at": "2026-02-07T23:32:16.730991+00:00",
+    "resolved_by": "Troubleshoot Bot"
   },
   {
     "id": "1dba7aec-896c-470b-9ca2-7e0f5647f099",
@@ -435,12 +443,13 @@
     "employee_email": "jennifer.washington@company.com",
     "subject": "Question about performance review process",
     "description": "I have my annual performance review coming up next month and I want to understand the process better. What should I prepare? Will there be a self-assessment form? Who will be involved in my review, and how is my rating determined?",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "General",
     "ai_confidence": 0.4548964500427246,
     "ai_response": "Thank you for contacting HR. Your request has been received and will be addressed within 24-48 hours.",
     "created_at": "2026-02-07T20:29:13.777476+00:00",
-    "updated_at": "2026-02-07T20:29:13.777489+00:00"
+    "updated_at": "2026-02-07T23:31:23.409105+00:00",
+    "resolved_by": "Troubleshoot Bot"
   },
   {
     "id": "f3ef24df-2b32-449f-938f-1b5be6108145",
@@ -448,12 +457,13 @@
     "employee_email": "marcus.reed@company.com",
     "subject": "Payroll discrepancy - missing overtime",
     "description": "Hello payroll team, I was reviewing my last paycheck and noticed that my 10 hours of overtime from the week of January 15th were not included. Could you please investigate and let me know when this will be corrected?",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "Payroll",
     "ai_confidence": 0.5403580665588379,
     "ai_response": "We've received your payroll inquiry. Our payroll team processes requests within 2 business days. For urgent matters, please contact payroll@company.com directly.",
     "created_at": "2026-02-07T20:30:59.732206+00:00",
-    "updated_at": "2026-02-07T20:30:59.732218+00:00"
+    "updated_at": "2026-02-07T23:30:36.806139+00:00",
+    "resolved_by": "Dashboard User"
   },
   {
     "id": "7857c8d3-bcf8-493c-b6d0-8db331063e24",
@@ -461,12 +471,13 @@
     "employee_email": "jennifer.martinez@company.com",
     "subject": "Request for PTO Balance Clarification",
     "description": "Hi HR Team,\n\nI'm trying to plan some time off for next month but I'm confused about my current PTO balance. When I log into the employee portal, it shows 12 days remaining, but I thought I should have 15 days based on my anniversary date in November.\n\nCould someone please verify my PTO accrual and let me know if there's a discrepancy? Also, if I wanted to take a week off (March 10-14), what's the approval process?\n\nThanks,\nJennifer Martinez\nMarketing Department\nEmployee ID: EMP-2847",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "PTO",
     "ai_confidence": 0.6089645028114319,
     "ai_response": "Your PTO request has been received. Please ensure your manager approves the request in the HR system. Standard PTO requests are processed within 1 business day.",
     "created_at": "2026-02-07T23:06:16.242594+00:00",
-    "updated_at": "2026-02-07T23:06:16.242617+00:00"
+    "updated_at": "2026-02-07T23:30:19.767776+00:00",
+    "resolved_by": "Dashboard User"
   },
   {
     "id": "e68d0673-2adc-4d3b-81f3-5449391b9d4a",
@@ -474,11 +485,12 @@
     "employee_email": "david.chen@company.com",
     "subject": "URGENT: Direct deposit not received - paycheck missing",
     "description": "Hi HR Team,\n\nThis is urgent - I did not receive my direct deposit today (payday). My bank shows no pending transactions from the company.\n\nI've been with the company for 2 years and this has never happened before. I have bills due on Monday and I'm really concerned.\n\nCan someone please look into this immediately? My employee ID is EMP-5521 and I'm in the Engineering department.\n\nMy bank account information hasn't changed - same account as always.\n\nPlease help ASAP!\n\nThanks,\nDavid Chen",
-    "status": "classified",
+    "status": "resolved",
     "ai_category": "Complaint",
     "ai_confidence": 0.8158814907073975,
     "ai_response": "We take all workplace concerns seriously. Your matter has been flagged for priority review. An HR representative will contact you within 24 hours.",
     "created_at": "2026-02-07T23:12:17.866980+00:00",
-    "updated_at": "2026-02-07T23:12:17.866993+00:00"
+    "updated_at": "2026-02-07T23:30:05.916565+00:00",
+    "resolved_by": "Dashboard User"
   }
 ]
