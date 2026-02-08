@@ -182,15 +182,6 @@ pip install -r requirements.txt
 python server.py
 ```
 
-### 5. Use the App
-
-| Page | URL |
-|------|-----|
-| Submit Tickets | http://localhost:5001 |
-| Dashboard | http://localhost:5001/dashboard |
-| Workflows | http://localhost:5001/workflows |
-| Integrations | http://localhost:5001/integrations |
-
 ---
 
 ## 📊 AI Ticket Categories
